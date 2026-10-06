@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="receipt">
+<h1>Order #{{order.id}}</h1>
+<h2>🌸 kavan patel</h2>
+<p><b>Shop:</b> {{order.shop.name}}<br>
+<b>Owner:</b> {{order.shop.owner_name}}<br>
+<b>Mobile:</b> {{order.shop.phone}}<br>
+<b>Salesman:</b> {{order.salesman|default:"-"}}</p>
+{% if order.shop.shop_photo %}<img class="photo" src="{{order.shop.shop_photo.url}}">{% endif %}
+{% if order.shop.card_photo %}<img class="photo" src="{{order.shop.card_photo.url}}">{% endif %}
+<table><tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
+{% for i in order.items.all %}<tr><td>{{i.product.name}}</td><td>{{i.quantity}}</td><td>₹{{i.unit_price}}</td><td>₹{{i.subtotal}}</td></tr>{% endfor %}
+</table>
+<h2>Total: ₹{{order.total_amount}}</h2>
+<p>Paid: ₹{{order.paid_amount}} | Pending: ₹{{order.pending_amount}}</p>
+<a class="btn" href="/order/{{order.id}}/whatsapp/">Open WhatsApp Summary</a>
+<a class="btn secondary" href="/visit/new/">New Visit</a>
+</div>
+{% endblock %}

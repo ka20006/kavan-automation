@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>New Shop Visit & Order</h1>
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
+<section><h2>🏪 Shop Details</h2>
+<div class="grid">
+<label>Shop Name<input name="shop_name" required></label>
+<label>Owner Name<input name="owner_name"></label>
+<label>Mobile Number<input name="phone" required></label>
+<label>Address<textarea name="address"></textarea></label>
+<label>Shop Photo<input type="file" name="shop_photo" accept="image/*" capture="environment"></label>
+<label>Visiting Card Photo<input type="file" name="card_photo" accept="image/*" capture="environment"></label>
+</div></section>
+<section><h2>🧾 Order</h2>
+<table><tr><th>Product</th><th>Price</th><th>Quantity</th><th>Subtotal</th></tr>
+{% for p in products %}
+<tr><td>{{p.name}}</td><td>₹{{p.price}}</td><td><input class="qty" data-price="{{p.price}}" name="qty_{{p.id}}" type="number" min="0" value="0"></td><td class="sub">₹0</td></tr>
+{% empty %}<tr><td colspan="4">Add products from Admin first.</td></tr>{% endfor %}
+</table>
+<div class="total">Order Total: ₹<span id="total">0.00</span></div>
+<div class="grid">
+<label>Payment Method<select name="payment_method"><option value="cash">Cash</option><option value="upi">UPI</option><option value="partial">Partial</option><option value="credit">Credit</option></select></label>
+<label>Paid Amount<input id="paid" name="paid_amount" type="number" min="0" step="0.01" value="0"></label>
+</div></section>
+<button class="btn primary" type="submit">Save Visit & Create Order</button>
+</form>
+<script>
+function calc(){
+ let total=0;
+ document.querySelectorAll(".qty").forEach(q=>{
+   let sub=(Number(q.dataset.price)||0)*(Number(q.value)||0);
+   q.closest("tr").querySelector(".sub").textContent="₹"+sub.toFixed(2);
+   total+=sub;
+ });
+ document.getElementById("total").textContent=total.toFixed(2);
+}
+document.querySelectorAll(".qty").forEach(q=>q.addEventListener("input",calc)); calc();
+</script>
+{% endblock %}
